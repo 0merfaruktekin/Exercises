@@ -24,7 +24,8 @@ Yaratacağınız data.frame nesnesinin sütun isimleri Excel'de bulunan değişk
 
 ```{r}
 # Excel dosyasındaki ham verileri data.frame formatında R'a ithal edin
-# havaK <- <kodu tamamla>
+library(readxl)
+havaK <- read_excel("Veri Detaylari26.03.2024 14_36_17.xlsx")
 ```
 
 ## Egzersiz 2 - Veri Kalite Kontrolü
@@ -32,20 +33,28 @@ Yaratacağınız data.frame nesnesinin sütun isimleri Excel'de bulunan değişk
 ### Zaman sütunu
 Zaman değerlerini içeren sütunun isminin **Time** olmasını sağlayın
 ```{r}
-#  <kodu tamamla>
+colnames(havaK)[1] <- "Time"
+
 ```
 
 
 *havaK$Time* adlı değişkendeki bütün verilerin **POSIXct** tipinde olmasını sağlayın. 
 
 ```{r}
-# <kodu tamamla>
+invisible(as.POSIXct(havaK$Time, tz=""))
 ```
 
 *Time* sütunu dışındaki bütün sütunların tipinin **numeric** olmasını sağlayın. *havaK* nesnesinin ilk 10 satırının raporda gözükmesini sağlayın.
 
 ```{r}
-# <kodu tamamla>
+havaK$PM10<-as.numeric(havaK$PM10)
+havaK$SO2<-as.numeric(havaK$SO2)
+havaK$NO2<-as.numeric(havaK$NO2)
+havaK$NOX<-as.numeric(havaK$NOX)
+havaK$NO<-as.numeric(havaK$NO)
+havaK$O3<-as.numeric(havaK$O3)
+head(havaK,n=10)
+
 ```
 
 ## Egzersiz 3 - Veri Görselleme
@@ -56,5 +65,14 @@ Zaman değerlerini içeren sütunun isminin **Time** olmasını sağlayın
 
 ```{r}
 library(dygraphs)
-#  <kodu tamamla>
+pm10<-data.frame(havaK$Time,havaK$PM10)
+colnames(pm10)[2] <- "PM10"
+colnames(pm10)[1] <- "Time"
+so2<-data.frame(havaK$Time,havaK$SO2)
+colnames(so2)[2] <- "SO2"
+colnames(so2)[1] <- "Time"
+combined<- cbind(pm10,so2)
+
+dygraph(combined) %>%
+  dySeries("PM10", axis = 'y2')
 ```
